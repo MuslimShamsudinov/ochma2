@@ -14,3 +14,6 @@ class WeatherApp extends StatelessWidget {
     );
   }
 }
+List<String> tyjuy6u = [
+
+];
