@@ -15,25 +15,23 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-
 class _HomeViewState extends State<HomeView> {
-  
-String city = '';
-double temp = 0;
-@override
-void initState() {
-  showWeather();
-  super.initState();
-  
-}
+  String city = '';
+  double temp = 0;
+  @override
+  void initState() {
+    showWeather();
+    super.initState();
+  }
 
-Future<void> showWeather() async {
-  final position = await getPosition();
-  log('Position latitude ===> ${position.latitude}');
-  log('Position longitude ===> ${position.longitude}');
-  abayirainAlipKel(position);
-}
- Future<void> abayirainAlipKel(Position position) async {
+  Future<void> showWeather() async {
+    final position = await getPosition();
+    log('Position latitude ===> ${position.latitude}');
+    log('Position longitude ===> ${position.longitude}');
+    abayirainAlipKel(position);
+  }
+
+  Future<void> abayirainAlipKel(Position position) async {
     var client = Client();
     Uri uri = Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}.&lon=${position.longitude}&appid=6fc51caca8e07e7f034e6fbdf32c5828');
@@ -45,37 +43,32 @@ Future<void> showWeather() async {
     // log('$city');
     setState(() {});
   }
-Future<Position> getPosition() async {
-  bool serviceEnabled;
-  LocationPermission permission;
 
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    return Future.error('Location services are disabled.');
-  }
+  Future<Position> getPosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      return Future.error('Location permissions are denied');
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
     }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 
-  if (permission == LocationPermission.deniedForever) {
-    return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
-  }
-
-  return await Geolocator.getCurrentPosition();
-}
-
-
-
-    
-
-
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
